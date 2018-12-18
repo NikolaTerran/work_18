@@ -7,16 +7,18 @@
 
 int main(){
 	int fd;
-	mkfifo("luigi",0644);
+	//mkfifo("luigi",0644);
 	printf("ok\n");				  //blocking?
-	fd = open("luigi", O_RDONLY); //quit?
+	fd = open("luigi", O_WRONLY); //quit?
 	printf("opened: %d\n",fd);
 	char* buffer;
+	
 	while(1){
-	buffer = malloc(256);
-	read(fd,buffer,256);
-	printf("%s\n",buffer);
-	free(buffer);
+		buffer = malloc(256);
+		scanf("%s",buffer);
+		write(fd,buffer,256);
+		//printf("%s\n",buffer);
+		free(buffer);
 	}
 	return 0;
 }

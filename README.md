@@ -25,34 +25,49 @@ mkfifo
 ### returns 0 on sucess and -1 on failure
 ### Once created the FIFO acts like a * file
 
+## Server & Client
+### Server makes a pipe
+### Client makes a pipe
+### Client connects to the server pipe
+### Client send a verification msg along with pipe name to server
+### Server connects to the client pipe
+### Server sends a verification msg
 
+## Handshake
+### A procedure to ensure that a connection has been established between 2 programs
+### Both ends of the connection must verify that they can send and receive data to and from each other.
 
+### 3 way handshake
+### Client sends a message to the server
+### Server sends a response to the client
+### Clients sends a response back to the server
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Basic Server/Client design pattern
+### 1. Set up
+### 1.1 Server creates a FIFO(WELL KNOWN PIPE) and waits for a connection
+### 1.2 Client creates a "private" FIFO (use PID)
+### 2. Handshake
+### 2.1 Client connects to the server and sends the private FIFO name, Client waits for a 
+###     response from the server
+### 2.2 Server receives client's message and removes the WKP.
+### 2.3 Server connects to client FIFO, sending an initial acknowlegement message 
+### 2.4 Client receives server's message, removes its private FIFO.
+### 2.5 Client sends response to server.
+### 3. Operation: Server and client send information back and forth.
+### 4. Reset
+### 4.1 Client exits, server closes any connections to the client.
+### 4.2 Server recreates the WKP waits for another client.
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
 
 
 
