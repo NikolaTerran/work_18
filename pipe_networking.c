@@ -26,11 +26,13 @@ int server_handshake(int *to_client) {
 	close(fd);
 	printf("[server] connecting to the client pipe\n");
 	fd = open(buffer,O_WRONLY);
+	printf("%s\n",strerror(errno));
+	printf("%s\n",buffer);
 	printf("[server] sending response\n");
 	char * char_buf;
 	char_buf = malloc(BUFFER_SIZE);
 	char_buf = ACK;
-	write(fd,char_buf,HANDSHAKE_BUFFER_SIZE);
+	write(fd2,char_buf,HANDSHAKE_BUFFER_SIZE);
 	//free(buffer);
 	//}
 	remove(PIPE_SERVER);
@@ -49,16 +51,23 @@ int server_handshake(int *to_client) {
   =========================*/
 int client_handshake(int *to_server) {
   	int fd;
-	printf("[client] creating pipe\n");
-	mkfifo(PIPE_CLIENT,0666);
+	
 	//printf("[update] enter server pipe fd\n");
 	char *buffer;
 	buffer = malloc(BUFFER_SIZE);
 	//scanf("%s",buffer);
 	printf("[client] establishing connection\n");
 	fd = open(PIPE_SERVER,O_WRONLY);
-	write(fd,PIPE_CLIENT,HANDSHAKE_BUFFER_SIZE);
+	if(fd == -1){
+		printf("[client] wkp is not there, force quit\n");
+		exit(1);
+	} 
+	printf("[client] creating pipe\n");
+	sprintf(buffer, "%d",getpid());
+	mkfifo(buffer,0666);
+	write(fd,buffer,HANDSHAKE_BUFFER_SIZE);
 	close(fd);	
+	
 	printf("[client] wait for server response\n");
 	fd = open(PIPE_CLIENT,O_RDONLY);
 	char * char_buf;
@@ -66,6 +75,6 @@ int client_handshake(int *to_server) {
 	read(fd,char_buf,HANDSHAKE_BUFFER_SIZE);
 	printf("[client] server's response: %s\n",char_buf);	//blocking?
 	close(fd);
-	remove(PIPE_CLIENT);
+	remove(buffer);
 	return 0;
 }
