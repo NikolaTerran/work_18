@@ -26,13 +26,13 @@ int server_handshake(int *to_client) {
 	close(fd);
 	printf("[server] connecting to the client pipe\n");
 	fd = open(buffer,O_WRONLY);
-	printf("%s\n",strerror(errno));
-	printf("%s\n",buffer);
+	printf("[server] %s\n",strerror(errno));
+	printf("[server] %s\n",buffer);
 	printf("[server] sending response\n");
 	char * char_buf;
 	char_buf = malloc(BUFFER_SIZE);
 	char_buf = ACK;
-	write(fd2,char_buf,HANDSHAKE_BUFFER_SIZE);
+	write(fd,char_buf,HANDSHAKE_BUFFER_SIZE);
 	//free(buffer);
 	//}
 	remove(PIPE_SERVER);
@@ -69,7 +69,7 @@ int client_handshake(int *to_server) {
 	close(fd);	
 	
 	printf("[client] wait for server response\n");
-	fd = open(PIPE_CLIENT,O_RDONLY);
+	fd = open(buffer,O_RDONLY);
 	char * char_buf;
 	char_buf = malloc(BUFFER_SIZE);	
 	read(fd,char_buf,HANDSHAKE_BUFFER_SIZE);
